@@ -6,7 +6,14 @@ const {
   optmizedIntersect,
 } = require("../geometry"); // ← path adjusted
 
-// Helper: quick segment builder
+/**
+ * Helper function to create a segment from coordinates
+ * @param {number} x1 - Start point x coordinate
+ * @param {number} y1 - Start point y coordinate
+ * @param {number} x2 - End point x coordinate
+ * @param {number} y2 - End point y coordinate
+ * @returns {Segment} New segment instance
+ */
 const seg = (x1, y1, x2, y2) =>
   new Segment(new Point(x1, y1), new Point(x2, y2));
 
@@ -25,8 +32,14 @@ describe("Intersection algorithms agree on geometry", () => {
   });
 });
 
-// Tiny helper for nullable / float comparisons
-function equalish(p, q, eps = 1e-6) {
+/**
+ * Helper function for comparing nullable points with floating point tolerance
+ * @param {Point|null} p - First point (or null)
+ * @param {Point|null} q - Second point (or null)
+ * @param {number} eps - Epsilon tolerance for comparison (default: 1e-6)
+ * @returns {boolean} True if points are equal within tolerance
+ */
+const equalish = (p, q, eps = 1e-6) => {
   if (p === null || q === null) return p === q;
   return Math.abs(p.x - q.x) < eps && Math.abs(p.y - q.y) < eps;
-}
+};

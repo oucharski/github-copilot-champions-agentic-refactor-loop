@@ -20,11 +20,26 @@ const LOOPS = Number(process.env.LOOPS) || 150;
 const RESOLUTION = Number(process.env.RESOLUTION) || 300;
 
 // ─── Helpers ───────────────────────────────────────────────────
+/**
+ * Generates a random point within a range
+ * @returns {Point} Random point between -500 and 500 on both axes
+ */
 const randP = () =>
   new Point(Math.random() * 1_000 - 500, Math.random() * 1_000 - 500);
+
+/**
+ * Generates a random line segment
+ * @returns {Segment} Random segment with two random points
+ */
 const randSeg = () => new Segment(randP(), randP());
+
 const cases = Array.from({ length: LOOPS }, () => [randSeg(), randSeg()]);
 
+/**
+ * Measures execution time of a function over all test cases
+ * @param {Function} fn - Function to measure
+ * @returns {number} Elapsed time in milliseconds
+ */
 const elapsed = (fn) => {
   const t0 = performance.now();
   for (const [a, b] of cases) fn(a, b);
@@ -32,14 +47,18 @@ const elapsed = (fn) => {
 };
 
 // ─── Logging utility ──────────────────────────────────────────
-function appendResultsBlock(text) {
+/**
+ * Appends performance results to results.txt with timestamp banner
+ * @param {string} text - Performance summary text to append
+ */
+const appendResultsBlock = (text) => {
   const ts = new Date().toISOString();
   const head = `#################### ${ts} #######################\n`;
   const tail =
     "#####################################################################\n\n";
   const file = path.join(__dirname, "..", "results.txt");
   fs.appendFileSync(file, head + text + tail);
-}
+};
 
 // ─── The actual test ──────────────────────────────────────────
 test(`placeholder performance (LOOPS=${LOOPS}, RES=${RESOLUTION})`, () => {
@@ -54,7 +73,7 @@ test(`placeholder performance (LOOPS=${LOOPS}, RES=${RESOLUTION})`, () => {
 
   // console output for interactive runs
   /* eslint-disable no-console */
-  console.log("\n─ perf snapshot ─\n" + summary);
+  console.log(`\n─ perf snapshot ─\n${summary}`);
   /* eslint-enable  no-console */
 
   // log to file

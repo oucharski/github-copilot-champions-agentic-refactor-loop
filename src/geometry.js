@@ -20,29 +20,44 @@ class Segment {
 //  1. Brute-force sampler (slow but correct)
 //     – default grid is now 300 × 300
 // ────────────────────────────────────────────────────────────────
-var DEFAULT_RES = 300;
+const DEFAULT_RES = 300;
 
-function bruteForceIntersect(segA, segB, resolution = DEFAULT_RES, eps = 1e-9) {
-  var lerp = (a, b, t) =>
+/**
+ * Finds intersection between two line segments using brute-force sampling
+ * @param {Segment} segA - First line segment
+ * @param {Segment} segB - Second line segment
+ * @param {number} resolution - Grid resolution for sampling (default: 300)
+ * @param {number} eps - Epsilon for collision detection (default: 1e-9)
+ * @returns {Point|null} Intersection point or null if no intersection
+ */
+const bruteForceIntersect = (segA, segB, resolution = DEFAULT_RES, eps = 1e-9) => {
+  const lerp = (a, b, t) =>
     new Point(a.x + t * (b.x - a.x), a.y + t * (b.y - a.y));
 
   for (let i = 0; i <= resolution; ++i) {
-    var pa = lerp(segA.p1, segA.p2, i / resolution);
+    const pa = lerp(segA.p1, segA.p2, i / resolution);
     for (let j = 0; j <= resolution; ++j) {
-      var pb = lerp(segB.p1, segB.p2, j / resolution);
+      const pb = lerp(segB.p1, segB.p2, j / resolution);
       if (Math.abs(pa.x - pb.x) < eps && Math.abs(pa.y - pb.y) < eps) {
         return pa; // first near-collision ≈ intersection
       }
     }
   }
   return null; // no intersection
-}
+};
 
 // ────────────────────────────────────────────────────────────────
 //  2. O(1) analytical intersection using parametric line equations
 //     – computes exact intersection using determinants
 // ────────────────────────────────────────────────────────────────
-function optmizedIntersect(segA, segB, eps = 1e-9) {
+/**
+ * Finds intersection between two line segments using analytical computation
+ * @param {Segment} segA - First line segment
+ * @param {Segment} segB - Second line segment
+ * @param {number} eps - Epsilon for numerical stability (default: 1e-9)
+ * @returns {Point|null} Intersection point or null if no intersection
+ */
+const optmizedIntersect = (segA, segB, eps = 1e-9) => {
   // Extract points for readability
   const x1 = segA.p1.x, y1 = segA.p1.y;
   const x2 = segA.p2.x, y2 = segA.p2.y;
@@ -115,7 +130,7 @@ function optmizedIntersect(segA, segB, eps = 1e-9) {
   }
 
   return null; // Intersection exists but outside segment bounds
-}
+};
 
 // ────────────────────────────────────────────────────────────────
 module.exports = {
